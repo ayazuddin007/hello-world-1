@@ -1,0 +1,71 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(
+            choices: ['Dev', 'QA', 'Staging', 'Production'],
+            description: 'Choose which environment to push changes to.',
+            name: 'DEPLOY_TO')
+    }
+    
+    environment {
+        DEPLOY_TO = "${params.DEPLOY_TO}"
+    }
+    
+    stages {
+        stage('Build') { 
+            steps { 
+                sh 'echo "Build"' 
+            }
+        }
+        stage('Test'){
+            steps {
+                sh 'echo "Test"'
+            }
+        }
+        
+        
+        stage("Deploy to Dev") {
+            when {
+                environment ignoreCase: true, name: "DEPLOY_TO", value: "Dev"
+            }
+            steps {
+                // copy files to devserver2
+                sh 'echo "Dev Server"'
+            }
+        }
+       
+       stage("Deploy to QA") {
+            when {
+                environment ignoreCase: true, name: "DEPLOY_TO", value: "QA"
+            }
+            steps {
+                // copy files to staging server
+                sh 'echo "QA Server"'
+            }
+        }
+       
+        stage("Deploy to Staging") {
+            when {
+                environment ignoreCase: true, name: "DEPLOY_TO", value: "Staging"
+            }
+            steps {
+                // copy files to staging server
+                sh 'echo "Staging Server"'
+            }
+        }
+        
+        stage("Deploy to Production") {
+            when {
+                environment ignoreCase: true, name: "DEPLOY_TO", value: "Production"
+            }
+            steps {
+                // copy files to production server
+                sh 'echo "Production Server"'
+            }
+        }
+        
+        
+        
+    }
+}
